@@ -1,2 +1,2 @@
-tornado
+git+ssh://git@github.com/facebook/tornado.git
 toro
