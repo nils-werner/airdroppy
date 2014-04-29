@@ -21,18 +21,13 @@ class FormHandler(tornado.web.RequestHandler):
 class ShareHandler(tornado.web.RequestHandler):
     def prepare(self):
         self.key = self.request.uri.split('/')[2]
-        queues[self.key] = toro.JoinableQueue(maxsize=3)
-        pass
+        queues[self.key] = toro.Queue(maxsize=1)
 
-    #@tornado.web.asynchronous
-    #@tornado.gen.engine
     def data_received(self, data):
-        #print "data received:" + data
+        print "data received: %s" % len(data)
         return queues[self.key].put(data)
-        pass
 
     def post(self, uri):
-        #print "Finished post"
         pass
 
 
@@ -40,18 +35,18 @@ class FetchHandler(tornado.web.RequestHandler):
     def prepare(self):
         self.key = self.request.uri.split('/')[2]
 
-    #@tornado.web.asynchronous
-    @tornado.gen.engine
+    @tornado.web.asynchronous
+    @tornado.gen.coroutine
     def get(self, uri):
         self.set_header ('Content-Type', 'application/octet-stream')
         self.set_header ('Content-Disposition', 'attachment')
 
-        while True:
-            item = yield queues[self.key].get()
-            print "data sent:" + item
+
+        item = yield queues[self.key].get()
+        while item:
+            print "data sent: %s" % len(item)
             self.write(item)
-        queues[self.key].task_done()
-        del queues[self.key]
+            item = yield queues[self.key].get()
 
 
 handlers = [
