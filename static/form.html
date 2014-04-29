@@ -9,10 +9,12 @@
         <![endif]-->
     </head>
     <body>
-     <h1>AirDroppy</h1>
-     <p>Share files directly with peers by sending them a short link.</p>
-     <p>The file will never be saved on the server but directly proxied to the downloader.</p>
-     <form action="/share/key/" enctype="multipart/form-data" method="post">
+    <h1>AirDroppy</h1>
+    <p>Share files directly with peers by sending them a short link.</p>
+    <p>The file will never be saved on the server but directly proxied to the downloader.</p>
+    <p>Send the following link to the recipient and wait until the transfer has finished.</p>
+    <p><code>{{ request.protocol }}://{{ request.host }}/fetch/{{ key }}</code></p>
+     <form action="/share/{{ key }}/" enctype="multipart/form-data" method="post">
         <label for="file">File</label>
         <input type="file" name="file" id="file" />
         <input type="submit" value="Absenden">

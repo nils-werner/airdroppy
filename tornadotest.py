@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import uuid
 import toro
 import tornado.gen
 import tornado.web
@@ -14,7 +15,7 @@ queues = {}
 
 class FormHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render("static/form.html")
+        self.render("static/form.html", key=uuid.uuid1().hex[:5])
 
 
 @tornado.web.stream_request_body
@@ -29,6 +30,7 @@ class ShareHandler(tornado.web.RequestHandler):
 
     def post(self, uri):
         queues[self.key].put(False)
+        self.render("static/success.html")
 
 
 class FetchHandler(tornado.web.RequestHandler):
