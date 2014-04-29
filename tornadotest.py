@@ -25,10 +25,10 @@ class ShareHandler(tornado.web.RequestHandler):
 
     def data_received(self, data):
         print "data received: %s" % len(data)
-        return queues[self.key].put(data)
+        yield queues[self.key].put(data)
 
     def post(self, uri):
-        pass
+        queues[self.key].task_done()
 
 
 class FetchHandler(tornado.web.RequestHandler):
@@ -38,15 +38,20 @@ class FetchHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     @tornado.gen.coroutine
     def get(self, uri):
-        self.set_header ('Content-Type', 'application/octet-stream')
-        self.set_header ('Content-Disposition', 'attachment')
-
+        self.set_header('Content-Type', 'application/octet-stream')
+        self.set_header('Content-Disposition', 'attachment')
+        self.flush()
 
         item = yield queues[self.key].get()
         while item:
             print "data sent: %s" % len(item)
             self.write(item)
+            self.flush()
             item = yield queues[self.key].get()
+
+        del queues[self.key]
+        self.finish()
+
 
 
 handlers = [
