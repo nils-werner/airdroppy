@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>AirDroppy</title>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+        <!--[if IE]>
+        <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+     <h1>AirDroppy</h1>
+     <p>Share files directly with peers by sending them a short link.</p>
+     <p>The file will never be saved on the server but directly proxied to the downloader.</p>
+     <form action="/share/key/" enctype="multipart/form-data" method="post">
+        <label for="file">File</label>
+        <input type="file" name="file" id="file" />
+        <input type="submit" value="Absenden">
+     </form>
+    </body>
+</html>
