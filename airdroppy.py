@@ -3,6 +3,7 @@
 import os
 import uuid
 import toro
+import utils
 import tornado.gen
 import tornado.web
 import tornado.ioloop
@@ -22,11 +23,12 @@ class FormHandler(tornado.web.RequestHandler):
 class ShareHandler(tornado.web.RequestHandler):
     def prepare(self):
         self.key = self.request.uri.split('/')[2]
+        self.stripper = utils.BoundaryStripper()
         queues[self.key] = toro.Queue(maxsize=1)
 
     def data_received(self, data):
         print "data received: %s" % len(data)
-        return queues[self.key].put(data)
+        return queues[self.key].put(self.stripper.process(data))
 
     def post(self, uri):
         queues[self.key].put(False)
