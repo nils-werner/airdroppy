@@ -1,2 +1,2 @@
-git+ssh://git@github.com/facebook/tornado.git
+-e git://github.com/tornadoweb/tornado.git#egg=tornado
 toro
